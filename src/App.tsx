@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
+import User, { UserInt } from './components/User';
+
 
 const App: React.FC = () => {
 
-  interface UserInt {
-    name: string
-    age: string
-    job: string
-  }
+
 
   interface AllUsersInt {
     currentUser: UserInt
@@ -18,7 +16,8 @@ const App: React.FC = () => {
     currentUser: {
       name: "",
       age: "",
-      job: ""
+      job: "",
+      deleteUser: () => { }
     },
     allUsers: []
   })
@@ -34,11 +33,45 @@ const App: React.FC = () => {
     })
   }
 
-  // console.log(usersState.currentUser);
-
-  const submitFormHandler = (e: React.SyntheticEvent) : void => {
+  const submitFormHandler = (e: React.SyntheticEvent): void => {
     e.preventDefault();
+
+    setUsersState({
+      currentUser: {
+        name: "",
+        age: "",
+        job: "",
+        deleteUser: () => { }
+
+      },
+      allUsers: [
+        ...usersState.allUsers,
+        usersState.currentUser
+      ]
+    })
   }
+
+  const deleteHandler = (index: number): void => {
+    const filterUsers = usersState.allUsers.filter((user, i) => {
+      return index !== i
+    })
+    setUsersState({
+      ...usersState,
+      allUsers: filterUsers
+    })
+  }
+
+
+  const allUSers = usersState.allUsers.map((user, i) => (
+    <User
+      key={i}
+      name={user.name}
+      age={user.age}
+      job={user.job}
+      deleteUser={() => deleteHandler(i)}
+    />
+  ))
+
 
 
   return (
@@ -71,6 +104,7 @@ const App: React.FC = () => {
 
         <button type="submit">Add user: </button>
       </form>
+      {allUSers}
     </div>
   );
 }
